@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // (추후) 여기에 블록 생성 및 관리, 사용자 입력 처리 등의 로직을 추가합니다.
     // 예: createBlock(x, y, z, type);
 });
-
 // js/main.js
 
 // --- 전역 변수 및 상수 ---
@@ -57,22 +56,31 @@ const sceneContainer = document.getElementById('scene-container');
 
 // 블록 타입 정의 (색상 등)
 const blockTypes = {
-    grass: { color: 0x559955 }, // 녹색 계열
-    dirt: { color: 0x8B4513 },  // 갈색 (SaddleBrown)
-    stone: { color: 0x808080 }  // 회색
+    grass: { color: 0x559955 },
+    dirt: { color: 0x8B4513 },
+    stone: { color: 0x808080 }
 };
+
+// --- NEW: Keyboard state and movement parameters ---
+const keysPressed = {
+    w: false, a: false, s: false, d: false,
+    shift: false, // For moving down
+    space: false  // For moving up
+};
+const cameraMoveSpeed = 0.2; // Adjust for desired speed
+const cameraLookSpeed = 0.002; // For mouse look, if you add it later
 
 // --- 초기화 함수 ---
 function init() {
     // 1. Scene 생성
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x87CEEB); // 하늘색 배경
+    scene.background = new THREE.Color(0x87CEEB);
 
     // 2. Camera 생성
     const aspect = sceneContainer.clientWidth / sceneContainer.clientHeight;
     camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
-    camera.position.set(5, 8, 10); // 카메라 위치 조정 (더 넓은 시야)
-    camera.lookAt(5, 0, 5); // 카메라가 생성될 땅 중앙을 바라보도록 설정
+    camera.position.set(5, 8, 10);
+    // camera.lookAt(5, 0, 5); // OrbitControls will manage the lookAt target initially
 
     // 3. Renderer 생성
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -84,21 +92,26 @@ function init() {
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.target.set(5, 0, 5); // 컨트롤의 타겟도 땅 중앙으로
+    controls.target.set(5, 0, 5);
+    // IMPORTANT for WASD control:
+    // OrbitControls can interfere with direct position updates.
+    // You might want to disable its panning or disable it entirely if WASD is primary.
+    // For now, we'll try to make them coexist.
+    // Or, if you prefer direct WASD control and mouse look, you might remove OrbitControls
+    // and implement PointerLockControls.
+    // controls.enablePan = false; // Option: Disable OrbitControls panning
 
     // 5. 조명 추가
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(10, 15, 10); // 빛 위치 조정
-    directionalLight.castShadow = true; // 그림자 생성 활성화
+    directionalLight.position.set(10, 15, 10);
+    directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    // 그림자 설정
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 부드러운 그림자
-
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     directionalLight.shadow.mapSize.width = 1024;
     directionalLight.shadow.mapSize.height = 1024;
     directionalLight.shadow.camera.near = 0.5;
@@ -109,28 +122,23 @@ function init() {
 
     // 7. 창 크기 변경 시 처리
     window.addEventListener('resize', onWindowResize, false);
+
+    // --- NEW: Add Keyboard Event Listeners ---
+    document.addEventListener('keydown', onKeyDown, false);
+    document.addEventListener('keyup', onKeyUp, false);
 }
 
 // --- 월드 생성 함수 ---
 function createWorldFromData() {
-    // 임시 월드 데이터 (JSON 파일에서 불러올 데이터와 유사한 구조)
-    // 10x1x10 크기의 땅을 만듭니다. y=0은 잔디, 그 아래 y=-1은 흙으로.
-    const worldData = {
-        blocks: []
-    };
-    const worldSize = 10; // 가로, 세로 크기
+    const worldData = { blocks: [] };
+    const worldSize = 10;
     const groundLevel = 0;
-
     for (let x = 0; x < worldSize; x++) {
         for (let z = 0; z < worldSize; z++) {
-            // 표면은 grass
             worldData.blocks.push({ x: x, y: groundLevel, z: z, type: 'grass' });
-            // 그 아래 한 층은 dirt
             worldData.blocks.push({ x: x, y: groundLevel - 1, z: z, type: 'dirt' });
         }
     }
-
-    // 데이터 기반으로 블록 생성
     worldData.blocks.forEach(blockData => {
         addBlock(blockData.x, blockData.y, blockData.z, blockData.type);
     });
@@ -138,23 +146,13 @@ function createWorldFromData() {
 
 // --- 블록 추가 함수 ---
 function addBlock(x, y, z, type) {
-    const blockInfo = blockTypes[type] || blockTypes.stone; // 정의되지 않은 타입은 stone으로
-
-    // Geometry: 모든 블록은 동일한 BoxGeometry를 공유하여 성능 향상 가능 (여기선 각자 생성)
-    // 최적화를 위해서는 하나의 Geometry를 여러 Mesh에서 재사용하는 것이 좋습니다.
+    const blockInfo = blockTypes[type] || blockTypes.stone;
     const geometry = new THREE.BoxGeometry(1, 1, 1);
-    
-    // Material: 각 블록 타입에 맞는 색상으로 Material 생성
-    // 이것도 동일 타입의 Material은 재사용 가능합니다.
     const material = new THREE.MeshStandardMaterial({ color: blockInfo.color });
-    
     const block = new THREE.Mesh(geometry, material);
-    // 블록의 중심이 (x,y,z) 그리드 셀의 중앙에 오도록 위치 조정
-    block.position.set(x + 0.5, y + 0.5, z + 0.5); 
-
-    block.castShadow = true;    // 블록이 그림자를 드리우도록 설정
-    block.receiveShadow = true; // 블록이 다른 객체의 그림자를 받도록 설정
-
+    block.position.set(x + 0.5, y + 0.5, z + 0.5);
+    block.castShadow = true;
+    block.receiveShadow = true;
     scene.add(block);
 }
 
@@ -167,11 +165,93 @@ function onWindowResize() {
     }
 }
 
+// --- NEW: Keyboard Event Handlers ---
+function onKeyDown(event) {
+    switch (event.key.toLowerCase()) {
+        case 'w': keysPressed.w = true; break;
+        case 'a': keysPressed.a = true; break;
+        case 's': keysPressed.s = true; break;
+        case 'd': keysPressed.d = true; break;
+        case ' ': event.preventDefault(); keysPressed.space = true; break; // Space for Up
+        case 'shift': event.preventDefault(); keysPressed.shift = true; break; // Shift for Down
+    }
+}
+
+function onKeyUp(event) {
+    switch (event.key.toLowerCase()) {
+        case 'w': keysPressed.w = false; break;
+        case 'a': keysPressed.a = false; break;
+        case 's': keysPressed.s = false; break;
+        case 'd': keysPressed.d = false; break;
+        case ' ': keysPressed.space = false; break;
+        case 'shift': keysPressed.shift = false; break;
+    }
+}
+
+// --- NEW: Update Camera Position based on keys ---
+function updateCameraMovement() {
+    if (!camera) return;
+
+    const forward = new THREE.Vector3();
+    camera.getWorldDirection(forward); // Gets the direction the camera is looking
+    forward.y = 0; // Keep movement horizontal (don't fly up/down based on pitch)
+    forward.normalize();
+
+    const right = new THREE.Vector3().crossVectors(camera.up, forward).normalize(); // Get right vector, perpendicular to 'up' and 'forward'
+
+    let moved = false;
+
+    if (keysPressed.w) {
+        camera.position.addScaledVector(forward, cameraMoveSpeed);
+        if (controls) controls.target.addScaledVector(forward, cameraMoveSpeed); // Move target with camera
+        moved = true;
+    }
+    if (keysPressed.s) {
+        camera.position.addScaledVector(forward, -cameraMoveSpeed);
+        if (controls) controls.target.addScaledVector(forward, -cameraMoveSpeed);
+        moved = true;
+    }
+    if (keysPressed.d) {
+        const strafeLeftDirection = new THREE.Vector3().crossVectors(camera.up, forward).negate().normalize();
+        camera.position.addScaledVector(strafeLeftDirection, cameraMoveSpeed);
+        if (controls) controls.target.addScaledVector(strafeLeftDirection, cameraMoveSpeed);
+        moved = true;
+    }
+    if (keysPressed.a) {
+        // To strafe right, we move in the positive 'right' direction.
+        const strafeRightDirection = new THREE.Vector3().crossVectors(camera.up, forward).normalize();
+        camera.position.addScaledVector(strafeRightDirection, cameraMoveSpeed);
+        if (controls) controls.target.addScaledVector(strafeRightDirection, cameraMoveSpeed);
+        moved = true;
+    }
+    if (keysPressed.space) {
+        camera.position.y += cameraMoveSpeed;
+        if (controls) controls.target.y += cameraMoveSpeed;
+        moved = true;
+    }
+    if (keysPressed.shift) {
+        camera.position.y -= cameraMoveSpeed;
+        if (controls) controls.target.y -= cameraMoveSpeed;
+        moved = true;
+    }
+}
+
+
 // --- 애니메이션 루프 ---
 function animate() {
     requestAnimationFrame(animate);
-    if (controls) controls.update(); // 컨트롤 업데이트
-    if (renderer && scene && camera) renderer.render(scene, camera); // 렌더링
+
+    // --- NEW: Update camera movement ---
+    updateCameraMovement();
+
+    if (controls) {
+        controls.update(); // OrbitControls update (handles damping, etc.)
+                           // If you want WASD to be the ONLY position control,
+                           // you might consider disabling OrbitControls or its pan/zoom features.
+    }
+    if (renderer && scene && camera) {
+        renderer.render(scene, camera); // 렌더링
+    }
 }
 
 // --- 실행 ---
@@ -183,16 +263,12 @@ try {
     const errorDiv = document.createElement('div');
     errorDiv.textContent = '오류가 발생했습니다. 콘솔을 확인해주세요.';
     errorDiv.style.cssText = `
-        color: red; 
-        position: absolute; 
-        top: 10px; left: 10px; 
-        padding: 10px; 
-        background-color: white; 
-        border: 1px solid red; 
-        z-index: 1000;`; // z-index 추가
-    if (sceneContainer) { // sceneContainer가 있는지 확인 후 추가
+        color: red; position: absolute; top: 10px; left: 10px;
+        padding: 10px; background-color: white; border: 1px solid red;
+        z-index: 1000;`;
+    if (sceneContainer) {
         sceneContainer.appendChild(errorDiv);
     } else {
-        document.body.appendChild(errorDiv); // 최후의 수단으로 body에 추가
+        document.body.appendChild(errorDiv);
     }
 }

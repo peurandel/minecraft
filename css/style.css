@@ -29,3 +29,41 @@ body {
     height: 100% !important; /* 높이 100% 강제 */
     border-radius: 8px; /* 캔버스 자체도 둥글게 (부모와 일치) */
 }
+
+#toolbar {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px; /* Space between icons */
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 8px;
+    border-radius: 6px;
+    z-index: 100; /* Ensure it's on top of the canvas */
+}
+
+.tool-icon {
+    width: 48px;
+    height: 48px;
+    border: 3px solid #555;
+    background-color: #888;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 28px; /* Adjust if using actual images */
+    user-select: none; /* Prevent text selection on click */
+    border-radius: 4px;
+    color: #fff; /* For emoji visibility */
+}
+
+.tool-icon:hover {
+    border-color: #aaa;
+}
+
+.tool-icon.selected {
+    border-color: #fff; /* White border for selected */
+    background-color: #aaa;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+}
