@@ -1,0 +1,63 @@
+.scene-container {
+    width: 100vw; /* 뷰포트 너비 전체 */
+    height: 100vh; /* 뷰포트 높이 전체 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* perspective: 원근감을 설정합니다. 값이 작을수록 왜곡이 심해집니다. */
+    perspective: 1000px;
+    perspective-origin: 50% 50%; /* 시점의 중심을 설정합니다. */
+}
+
+.world {
+    width: 1px; /* 내용은 없지만, transform-style의 기준점 */
+    height: 1px;
+    position: relative; /* 자식 요소(블록)들이 이 요소를 기준으로 배치됩니다. */
+    transform-style: preserve-3d; /* 자식 요소들을 3D 공간에 렌더링합니다. */
+    /* 초기 카메라 각도 설정 (월드를 회전시켜 뷰를 조정) */
+    transform: rotateX(60deg) rotateY(0deg) rotateZ(45deg) translateX(0px) translateY(-150px) translateZ(-200px);
+}
+
+.ground {
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    background: #556B2F; /* 어두운 올리브 그린색 바닥 */
+    /* 바닥면을 x축으로 90도 회전시켜 눕힙니다. */
+    /* 위치를 월드의 원점 기준으로 조정합니다. (translateX, translateY로 중앙정렬) */
+    transform: rotateX(90deg) translate(-50%, -50%) translateZ(-50px); /* translateZ로 바닥의 높이 조절 */
+    /* transform-origin: center center; */ /* 회전축을 중심으로 설정 */
+}
+
+/* TODO 블록의 기본 스타일 예시 */
+/*
+.block {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: #8B4513; // SaddleBrown
+    border: 1px solid #000;
+    transform-style: preserve-3d;
+}
+
+.face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: inherit;
+    border: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    color: white;
+    opacity: 0.8;
+}
+
+.front  { transform: translateZ(25px); }
+.back   { transform: rotateY(180deg) translateZ(25px); }
+.left   { transform: rotateY(-90deg) translateZ(25px); }
+.right  { transform: rotateY(90deg) translateZ(25px); }
+.top    { transform: rotateX(90deg) translateZ(25px); }
+.bottom { transform: rotateX(-90deg) translateZ(25px); }
+*/
