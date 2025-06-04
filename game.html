@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft - Multi Blocks</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="scene-container" class="rounded-lg"></div>
+    <div class="world"></div>
+
+    <div id="toolbar">
+        <div class="tool-icon" id="pickaxe-tool" data-tool="pickaxe" title="Pickaxe">⛏️</div>
+        <div class="tool-icon" id="grass-block-tool" data-tool="place" data-blocktype="grass" title="Grass Block">🟩</div>
+        <div class="tool-icon" id="dirt-block-tool" data-tool="place" data-blocktype="dirt" title="Dirt Block">🟫</div>
+        <div class="tool-icon" id="stone-block-tool" data-tool="place" data-blocktype="stone" title="Stone Block">🪨</div>
+        </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -3,24 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft - Multi Blocks</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>마인크래프트: 사이키델릭 에디션</title>
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Audiowide', cursive;
+            background-color: #000;
+            overflow: hidden;
+            color: #fff;
+        }
+        
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+        
+        .neon-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(15,10,30,0.9) 0%, rgba(5,2,15,0.95) 100%);
+            z-index: 1;
+        }
+        
+        .grid {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: 
+                linear-gradient(rgba(66, 0, 99, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(66, 0, 99, 0.3) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg);
+            animation: gridMove 15s linear infinite;
+            z-index: 2;
+        }
+        
+        @keyframes gridMove {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 0 40px;
+            }
+        }
+        
+        .content {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+                
+        .logo-wrapper {
+            position: relative;
+            width: 60%;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 60%;
+            max-width: 600px;
+            margin-bottom: 30px;
+            /* 필터 강화 */
+            filter: brightness(1.5) drop-shadow(0 0 15px #ff00ff) drop-shadow(0 0 30px #00ffff);
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+
+        .logo {
+            width: 100%;
+            filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 15px #ff00ff);
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% {
+                filter: drop-shadow(0 0 15px #ff00ff) drop-shadow(0 0 30px #00ffff);
+                transform: scale(1);
+            }
+            100% {
+                filter: drop-shadow(0 0 25px #ff00ff) drop-shadow(0 0 50px #00ffff);
+                transform: scale(1.05);
+            }
+        }
+        
+        .title {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 
+                0 0 10px #ff00ff,
+                0 0 20px #ff00ff,
+                0 0 40px #ff00ff;
+            animation: textFlicker 3s linear infinite;
+            background: linear-gradient(to right, #ff00ff, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        @keyframes textFlicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1;
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.8;
+            }
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            text-shadow: 0 0 8px #00ffff;
+            color: #c0c0c0;
+            max-width: 80%;
+        }
+        
+        .enter-button {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-family: 'Audiowide', cursive;
+            background-color: transparent;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+        }
+        
+        .enter-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.4), transparent);
+            transition: 0.5s;
+        }
+        
+        .enter-button:hover::before {
+            left: 100%;
+        }
+        
+        .enter-button:hover {
+            background-color: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .cubic {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 0, 255, 0.5);
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg) translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(360deg) translateY(-1000px) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .audio-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .audio-controls button {
+            background: transparent;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px #00ffff;
+        }
+        
+        .visualizer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            z-index: 4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 2px;
+        }
+        .bar {
+            background-color: #00ffff;
+            width: 10px;
+            height: 5px;
+            margin: 0 2px;
+            border-radius: 2px 2px 0 0;
+            box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+            transition: height 0.05s ease;
+}
+
+        .audio-controls button:hover {
+            background-color: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px #00ffff;
+        }
+
+        .audio-controls button:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .enter-button {
+                padding: 12px 30px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="scene-container" class="rounded-lg"></div>
+    <div class="container">
+        <div class="neon-overlay"></div>
+        <div class="grid"></div>
+        <div class="particles" id="particles"></div>
+        
+        <div class="content">
+            <div class="text-logo">MINECRAFT</div>
 
-    <div id="toolbar">
-        <div class="tool-icon" id="pickaxe-tool" data-tool="pickaxe" title="Pickaxe">⛏️</div>
-        <div class="tool-icon" id="grass-block-tool" data-tool="place" data-blocktype="grass" title="Grass Block">🟩</div>
-        <div class="tool-icon" id="dirt-block-tool" data-tool="place" data-blocktype="dirt" title="Dirt Block">🟫</div>
-        <div class="tool-icon" id="stone-block-tool" data-tool="place" data-blocktype="stone" title="Stone Block">🪨</div>
+            <h1 class="title">마인크래프트: 대진대 에디션</h1>
+            <p class="subtitle">차원을 초월한 블록 세계에서 몽환적인 모험을 시작하세요</p>
+            <button class="enter-button" id="enterButton">ENTER</button>
         </div>
+        
+        <div class="audio-controls">
+            <button id="playButton"><i class="fas fa-play"></i></button>
+            <button id="pauseButton"><i class="fas fa-pause"></i></button>
+        </div>
+        
+        <div class="visualizer" id="visualizer">
+            <!-- 오디오 시각화 바들이 여기에 동적으로 생성됩니다 -->
+        </div>
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="js/main.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 파티클 생성
+            createParticles();
+            
+            // 시작하기 버튼 클릭 이벤트
+            document.getElementById('enterButton').addEventListener('click', function() {
+                // 메인 게임 페이지로 이동
+                window.location.href = 'game.html'; // 실제 게임 페이지 URL로 변경하세요
+            });
+            
+            // 오디오 컨트롤
+            const audio = new Audio('sounds/background-music.mp3'); // 실제 음악 파일 경로로 변경하세요
+            audio.loop = true;
+            
+            document.getElementById('playButton').addEventListener('click', function() {
+                audio.play();
+                setupAudioVisualizer(audio);
+            });
+            
+            document.getElementById('pauseButton').addEventListener('click', function() {
+                audio.pause();
+            });
+        });
+        
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const cubic = document.createElement('div');
+                cubic.classList.add('cubic');
+                
+                // 랜덤 위치 및 크기
+                const size = Math.random() * 30 + 10;
+                cubic.style.width = `${size}px`;
+                cubic.style.height = `${size}px`;
+                
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                cubic.style.left = `${x}%`;
+                cubic.style.top = `${y}%`;
+                
+                // 랜덤 회전 및 색상
+                const hue = Math.random() * 60 + 280; // 보라색~파란색 계열
+                cubic.style.backgroundColor = `hsla(${hue}, 100%, 50%, 0.5)`;
+                cubic.style.animationDuration = `${Math.random() * 15 + 5}s`;
+                cubic.style.animationDelay = `${Math.random() * 2}s`;
+                
+                particlesContainer.appendChild(cubic);
+            }
+        }
+        
+        function setupAudioVisualizer(audioElement) {
+            const visualizer = document.getElementById('visualizer');
+            visualizer.innerHTML = ''; // 기존 바 제거
+            
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const analyser = audioContext.createAnalyser();
+            const source = audioContext.createMediaElementSource(audioElement);
+            
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+            
+            analyser.fftSize = 128;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            // 시각화 바 생성
+            const barCount = 32; // 바 개수 조절
+            const bars = [];
+            
+            for (let i = 0; i < barCount; i++) {
+                const bar = document.createElement('div');
+                bar.style.width = `${100 / barCount - 1}%`;
+                bar.style.backgroundColor = `hsl(${280 + i * 3}, 100%, 50%)`;
+                bar.style.height = '5px';
+                bar.style.transition = 'height 0.05s';
+                visualizer.appendChild(bar);
+                bars.push(bar);
+            }
+            
+            // 오디오 시각화 업데이트
+            function updateVisualizer() {
+                requestAnimationFrame(updateVisualizer);
+                
+                analyser.getByteFrequencyData(dataArray);
+                
+                for (let i = 0; i < barCount; i++) {
+                    const index = Math.floor(i * bufferLength / barCount);
+                    const value = dataArray[index];
+                    const height = value * 0.7; // 높이 조절
+                    bars[i].style.height = `${height}px`;
+                }
+            }
+            
+            updateVisualizer();
+        }
+    </script>
 </body>
 </html>
