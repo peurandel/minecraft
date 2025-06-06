@@ -1,0 +1,37 @@
+{
+  "blockTypes": {
+    "grass": {
+      "name": "Grass",
+      "texture": {
+        "top": "asset/textures/blocks/grass_block_top.png",
+        "side": "asset/textures/blocks/grass_block_side.png",
+        "bottom": "asset/textures/blocks/dirt.png"
+      },
+      "hardness": 0.6,
+      "tool": "shovel",
+      "drops": ["dirt"]
+    },
+    "dirt": {
+      "name": "Dirt",
+      "texture": {
+        "top": "asset/textures/blocks/dirt.png",
+        "side": "asset/textures/blocks/dirt.png",
+        "bottom": "asset/textures/blocks/dirt.png"
+      },
+      "hardness": 0.5,
+      "tool": "shovel",
+      "drops": ["dirt"]
+    },
+    "stone": {
+      "name": "Stone",
+      "texture": {
+        "top": "asset/textures/blocks/stone.png",
+        "side": "asset/textures/blocks/stone.png",
+        "bottom": "asset/textures/blocks/stone.png"
+      },
+      "hardness": 1.5,
+      "tool": "pickaxe",
+      "drops": ["cobblestone"]
+    }
+  }
+}

@@ -3,154 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마인크래프트: 사이키델릭 에디션</title>
+    <title>마인크래프트: 사이키델릭 에디션 v8.1</title>
     <style>
-
-        @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');        
+        /* Google Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+        
+        /* Basic Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Audiowide', cursive;
+            font-family: 'Audiowide', cursive; /* Sci-fi style font */
             background-color: #000;
-            overflow: hidden;
+            overflow: hidden; /* Prevent scrollbars from glitch/particle effects */
             color: #fff;
+            /* Apply blur and global glitch animation to the body */
+            animation: psychedelicBlur 15s ease-in-out infinite, globalGlitchShake 0.5s linear infinite alternate;
+        }
+
+        /* Animation for psychedelic blur and focus effect */
+        @keyframes psychedelicBlur {
+            0%, 100% { filter: blur(0px) brightness(1); opacity: 1; }
+            20% { filter: blur(2.5px) brightness(0.9) saturate(1.2); opacity: 0.85; }
+            40% { filter: blur(0px) brightness(1) saturate(1); opacity: 1; }
+            60% { filter: blur(4px) brightness(0.75) saturate(1.5); opacity: 0.7; }
+            80% { filter: blur(0px) brightness(1.05) saturate(1.1); opacity: 1; }
         }
         
         .container {
-            position: relative;
+            position: relative; 
             width: 100vw;
             height: 100vh;
-            background: #000;
         }
-        
-        .neon-overlay {
-            position: absolute;
+
+        /* Container for new swirling particles */
+        .swirling-particle-container {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(15,10,30,0.9) 0%, rgba(5,2,15,0.95) 100%);
-            z-index: 1;
+            pointer-events: none;
+            z-index: 1; /* Behind neon-overlay, grid, etc. */
+        }
+
+        .swirl-particle {
+            position: absolute;
+            border-radius: 50%;
+            /* JavaScript will set size, color, and position */
         }
         
+        /* Overlay for a darker, more focused neon feel */
+        .neon-overlay {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(10,5,25,0.55) 0%, rgba(3,1,10,0.70) 100%); /* Even more transparent */
+            z-index: 2; /* Above swirling particles */
+        }
+        
+        /* Animated retro grid */
         .grid {
-            position: absolute;
+            position: fixed;
             width: 200%;
             height: 200%;
             top: -50%;
             left: -50%;
             background: 
-                linear-gradient(rgba(66, 0, 99, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(66, 0, 99, 0.3) 1px, transparent 1px);
-            background-size: 40px 40px;
+                linear-gradient(rgba(60, 0, 90, 0.10) 1px, transparent 1px), /* Horizontal lines */
+                linear-gradient(90deg, rgba(60, 0, 90, 0.10) 1px, transparent 1px); /* Vertical lines */
+            background-size: 40px 40px; 
             transform: perspective(500px) rotateX(60deg);
-            animation: gridMove 15s linear infinite;
-            z-index: 2;
+            animation: gridMove 14s linear infinite;
+            z-index: 3; /* Above neon-overlay */
         }
         
         @keyframes gridMove {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 0 40px;
-            }
+            0% { background-position: 0 0; }
+            100% { background-position: 0 40px; }
+        }
+
+        /* Particle container - for original floating particles */
+        .particles { /* This is for the original .cubic particles */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; 
+            z-index: 4; /* Above grid */
         }
         
+        .cubic { /* Original floating particles */
+            position: absolute;
+            background-color: rgba(255, 0, 255, 0.15); /* More subtle */
+            animation: rotateAndGlow 12s linear infinite; /* Slower animation */
+            box-shadow: 0 0 2px currentColor, 0 0 5px currentColor; 
+        }
+        
+        @keyframes rotateAndGlow { /* Original cubic particle animation */
+            0% { transform: rotate(0deg) translateY(0vh) scale(0.30) ; opacity: 0.8; }
+            50% { opacity: 0.4; box-shadow: 0 0 8px currentColor, 0 0 15px currentColor; }
+            100% { transform: rotate(360deg) translateY(-100vh) scale(1.1); opacity: 0; } 
+        }
+
+
+        /* Scan lines overlay for a retro TV static effect */
+        .scan-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 180, 180, 0.010), /* Even more subtle */
+                rgba(0, 180, 180, 0.010) 1px,
+                transparent 1px,
+                transparent 3px 
+            );
+            animation: scanLineMove 16s linear infinite;
+            z-index: 5; /* Above original particles */
+            pointer-events: none; 
+        }
+
+        @keyframes scanLineMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100vh; }
+        }
+        
+        /* Main content area */
         .content {
-            position: relative;
-            z-index: 3;
+            position: relative; 
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             text-align: center;
+            padding: 20px; 
+            z-index: 6; /* Above scan-lines */
         }
                 
-        .logo-wrapper {
-            position: relative;
-            width: 60%;
-            max-width: 600px;
-            margin-bottom: 30px;
+        /* Global Glitch Overlay Effect */
+        .global-glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100; /* High z-index */
         }
 
-        .logo {
-            width: 60%;
-            max-width: 600px;
-            margin-bottom: 30px;
-            /* 필터 강화 */
-            filter: brightness(1.5) drop-shadow(0 0 15px #ff00ff) drop-shadow(0 0 30px #00ffff);
-            animation: pulse 2s ease-in-out infinite alternate;
-        }
-
-        .logo {
+        .global-glitch-overlay::before,
+        .global-glitch-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 15px #ff00ff);
-            animation: pulse 2s ease-in-out infinite alternate;
+            height: 100%;
+            background: transparent; 
+            opacity: 0.035; /* Slightly reduced */
+        }
+
+        .global-glitch-overlay::before {
+            background: repeating-linear-gradient(0deg, rgba(255,0,255,0.35) 0px, rgba(255,0,255,0.35) 1px, transparent 1px, transparent 13px);
+            animation: globalGlitchLineMove 0.38s steps(10) infinite, globalGlitchOpacity 1.15s linear infinite alternate;
+            left: -1.5px; 
+        }
+
+        .global-glitch-overlay::after {
+            background: repeating-linear-gradient(90deg, rgba(0,255,255,0.35) 0px, rgba(0,255,255,0.35) 1px, transparent 1px, transparent 15px);
+            animation: globalGlitchLineMove 0.48s steps(8) infinite reverse, globalGlitchOpacity 1.35s linear infinite alternate;
+            top: -0.5px; 
         }
         
-        @keyframes pulse {
-            0% {
-                filter: drop-shadow(0 0 15px #ff00ff) drop-shadow(0 0 30px #00ffff);
-                transform: scale(1);
-            }
-            100% {
-                filter: drop-shadow(0 0 25px #ff00ff) drop-shadow(0 0 50px #00ffff);
-                transform: scale(1.05);
-            }
+        @keyframes globalGlitchShake { 
+            0%, 100% { transform: translate(0,0); }
+            25% { transform: translate(0.4px, -0.4px); } /* Even more subtle shake */
+            50% { transform: translate(-0.4px, 0.4px); }
+            75% { transform: translate(0.4px, 0.4px); }
+        }
+
+        @keyframes globalGlitchLineMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(13px); } /* Reduced jump */
+        }
+        @keyframes globalGlitchOpacity {
+            0% { opacity: 0.020; }
+            100% { opacity: 0.065; }
         }
         
         .title {
-            font-size: 4rem;
+            font-size: clamp(2.4rem, 6.5vw, 3.8rem); 
             margin-bottom: 20px;
+            position: relative; 
+            color: #ff00ff; 
             text-shadow: 
-                0 0 10px #ff00ff,
-                0 0 20px #ff00ff,
-                0 0 40px #ff00ff;
-            animation: textFlicker 3s linear infinite;
-            background: linear-gradient(to right, #ff00ff, #00ffff, #ff00ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+                0 0 6px rgba(255,0,255,0.9), 
+                0 0 12px rgba(255,0,255,0.7),
+                0 0 20px rgba(0,255,255,0.7), 
+                0 0 30px rgba(0,200,200,0.5);
+            animation: textFlicker 2.8s linear infinite, titleHueRotate 7s linear infinite;
+        }
+
+        .title::before,
+        .title::after {
+            content: attr(data-text); 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: #00ffff; 
+            overflow: hidden;
+            opacity: 0.65;
+        }
+
+        .title::before {
+            left: 1px;
+            text-shadow: -0.5px 0 rgba(255,50,50,0.6); 
+            animation: glitch-anim-1 3s infinite linear alternate-reverse;
+        }
+
+        .title::after {
+            left: -1px;
+            text-shadow: 0.5px 0 rgba(50,50,255,0.6); 
+            animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
         }
         
-        @keyframes textFlicker {
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(10% 0 80% 0); } 20% { clip-path: inset(60% 0 20% 0); }
+            40% { clip-path: inset(20% 0 50% 0); } 60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(35% 0 30% 0); } 100% { clip-path: inset(90% 0 3% 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(75% 0 15% 0); } 20% { clip-path: inset(25% 0 60% 0); }
+            40% { clip-path: inset(55% 0 25% 0); } 60% { clip-path: inset(15% 0 70% 0); }
+            80% { clip-path: inset(70% 0 20% 0); } 100% { clip-path: inset(40% 0 50% 0); }
+        }
+
+        @keyframes textFlicker { 
             0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
-                opacity: 1;
+                opacity: 0.98; 
+                 text-shadow: 
+                    0 0 6px rgba(255,0,255,0.9), 0 0 12px rgba(255,0,255,0.7),
+                    0 0 20px rgba(0,255,255,0.7), 0 0 30px rgba(0,200,200,0.5);
             }
             20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
-                opacity: 0.8;
+                opacity: 0.7;
+                 text-shadow: 
+                    0 0 9px rgba(255,0,255,0.7), 0 0 18px rgba(0,255,255,0.9),
+                    0 0 28px rgba(0,200,200,0.7);
             }
+        }
+        @keyframes titleHueRotate {
+            0% { filter: hue-rotate(-10deg) brightness(1); }
+            50% { filter: hue-rotate(30deg) brightness(1.1); } 
+            100% { filter: hue-rotate(-10deg) brightness(1); }
         }
         
         .subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 40px;
-            text-shadow: 0 0 8px #00ffff;
-            color: #c0c0c0;
-            max-width: 80%;
+            font-size: clamp(0.9rem, 3vw, 1.3rem); 
+            margin-bottom: 35px;
+            text-shadow: 0 0 5px #00c0c0;
+            color: #a0a0a0; 
+            max-width: 75%;
+            line-height: 1.45; 
         }
         
         .enter-button {
-            padding: 15px 40px;
-            font-size: 1.5rem;
+            padding: 13px 35px;
+            font-size: clamp(1rem, 2.5vw, 1.3rem); 
             font-family: 'Audiowide', cursive;
             background-color: transparent;
-            border: 2px solid #00ffff;
-            color: #00ffff;
+            border: 1.5px solid #00dddd;
+            color: #00dddd;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s ease-in-out;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 2.5px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+            box-shadow: 0 0 7px #00dddd, 0 0 15px #00dddd, inset 0 0 3px rgba(0,221,221,0.2);
+            animation: buttonPulse 2s infinite alternate;
         }
         
         .enter-button::before {
@@ -160,242 +305,435 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.4), transparent);
-            transition: 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(0, 221, 221, 0.35), transparent);
+            transition: 0.45s ease-in-out;
         }
         
-        .enter-button:hover::before {
-            left: 100%;
-        }
+        .enter-button:hover::before { left: 100%; }
         
         .enter-button:hover {
-            background-color: rgba(0, 255, 255, 0.1);
-            box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
-            text-shadow: 0 0 5px #00ffff;
+            background-color: rgba(0, 221, 221, 0.12);
+            box-shadow: 0 0 18px #00dddd, 0 0 35px #00dddd, 0 0 50px #00cccc, inset 0 0 7px rgba(0,221,221,0.35);
+            text-shadow: 0 0 3px #00dddd;
+            color: #bbeeee;
+            border-color: #bbeeee;
+        }
+
+        @keyframes buttonPulse { 
+            from {
+                 box-shadow: 0 0 7px #00dddd, 0 0 15px #00dddd, inset 0 0 3px rgba(0,221,221,0.2);
+                 transform: scale(1);
+            }
+            to {
+                 box-shadow: 0 0 10px #00dddd, 0 0 22px #00dddd, 0 0 30px #00cccc, inset 0 0 5px rgba(0,221,221,0.3);
+                 transform: scale(1.015);
+            }
         }
         
-        .particles {
-            position: absolute;
+        /* Container for "퍄퍗" (flash) highlights */
+        .flash-highlights-container {
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             pointer-events: none;
-            z-index: 2;
+            z-index: 99; 
         }
-        
-        .cubic {
+
+        .flash-highlight {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: rgba(255, 0, 255, 0.5);
-            animation: rotate 10s linear infinite;
+            width: 2.5px; 
+            height: 50px; 
+            background-color: rgba(180, 255, 255, 0.65); 
+            box-shadow: 0 0 8px 1.5px rgba(180, 255, 255, 0.45), 0 0 15px 4px rgba(130, 200, 255, 0.25);
+            opacity: 0;
+            animation: flashAppearDisappear 0.45s ease-out;
+            transform-origin: center;
+        }
+
+        @keyframes flashAppearDisappear {
+            0% { opacity: 0; transform: scale(0.4) rotate(0deg); }
+            50% { opacity: 0.9; transform: scale(0.9) rotate(var(--flash-rotate-end)); } 
+            100% { opacity: 0; transform: scale(0.4) rotate(var(--flash-rotate-end)); }
         }
         
-        @keyframes rotate {
-            0% {
-                transform: rotate(0deg) translateY(0) scale(0.5);
-                opacity: 1;
-            }
-            100% {
-                transform: rotate(360deg) translateY(-1000px) scale(1.5);
-                opacity: 0;
-            }
-        }
-        
+        /* Audio controls styling */
         .audio-controls {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10;
+            position: fixed; 
+            bottom: 18px;
+            right: 18px;
+            z-index: 101; 
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         
         .audio-controls button {
-            background: transparent;
-            border: 1px solid #00ffff;
-            color: #00ffff;
-            width: 40px;
-            height: 40px;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid #009999;
+            color: #00dddd; /* This color will be used by the SVG fill */
+            width: 38px; /* Adjusted width for SVG */
+            height: 38px; /* Adjusted height for SVG */
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 10px #00ffff;
+            box-shadow: 0 0 6px #00dddd;
+            transition: all 0.18s ease;
+            padding: 0; /* Remove padding if icons are SVG */
         }
-        
+         .audio-controls button svg { /* Style for SVG icons */
+            width: 16px; /* SVG icon size */
+            height: 16px; /* SVG icon size */
+            fill: currentColor; /* Use button's text color for SVG fill */
+        }
+
+
+        .audio-controls button:hover {
+            background-color: rgba(0, 221, 221, 0.22);
+            box-shadow: 0 0 10px #00dddd;
+            transform: scale(1.07);
+        }
+
+        .audio-controls button:active { transform: scale(0.97); }
+
+        /* Audio visualizer styling */
         .visualizer {
-            position: absolute;
+            position: fixed; 
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 100px;
-            z-index: 4;
+            height: 80px; 
+            z-index: 7; 
             display: flex;
             justify-content: center;
-            align-items: flex-end;
-            gap: 2px;
+            align-items: flex-end; 
+            gap: 0.8px; 
+            padding-bottom: 7px; 
+            pointer-events: none;
         }
-        .bar {
-            background-color: #00ffff;
-            width: 10px;
-            height: 5px;
-            margin: 0 2px;
-            border-radius: 2px 2px 0 0;
-            box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
-            transition: height 0.05s ease;
-}
-
-        .audio-controls button:hover {
-            background-color: rgba(0, 255, 255, 0.2);
-            box-shadow: 0 0 15px #00ffff;
+        .bar { 
+            background-color: #00cccc;
+            width: 7px; 
+            height: 3.5px; 
+            margin: 0 0.8px; 
+            border-radius: 1.5px 1.5px 0 0; 
+            box-shadow: 0 0 1.5px #00dddd, 0 0 4px #00dddd;
+            transition: height 0.035s ease; 
         }
 
-        .audio-controls button:active {
-            transform: scale(0.95);
-        }
-
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .title {
-                font-size: 2.5rem;
-            }
-            
-            .subtitle {
-                font-size: 1.2rem;
-            }
-            
-            .enter-button {
-                padding: 12px 30px;
-                font-size: 1.2rem;
-            }
+            .subtitle { max-width: 85%; }
+            .audio-controls { bottom: 7px; right: 7px; }
+             .audio-controls button { width: 34px; height: 34px;}
+             .audio-controls button svg { width: 14px; height: 14px;}
+            .visualizer { height: 55px; }
+            .title { font-size: clamp(1.8rem, 5.5vw, 2.8rem); }
+            .enter-button { padding: 11px 28px; font-size: clamp(0.9rem, 2.2vw, 1.1rem); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="swirling-particle-container" id="swirlingParticles"></div>
+    <div class="container"> 
         <div class="neon-overlay"></div>
         <div class="grid"></div>
-        <div class="particles" id="particles"></div>
-        
+        <div class="particles" id="particles"></div> 
+        <div class="scan-lines"></div> 
         <div class="content">
-            <div class="text-logo">MINECRAFT</div>
-
-            <h1 class="title">마인크래프트: 대진대 에디션</h1>
-            <p class="subtitle">차원을 초월한 블록 세계에서 몽환적인 모험을 시작하세요</p>
-            <button class="enter-button" id="enterButton">ENTER</button>
+            <h1 class="title" data-text="마인크래프트: 대진대 에디션">마인크래프트: 대진대 에디션</h1>
+            <p class="subtitle">차원을 초월한 블록 세계에서 몽환적인 모험을 시작하세요. 빛과 그림자가 춤추는 이곳에서 당신의 상상력이 현실이 됩니다.</p>
+            <button class="enter-button" id="enterButton">ENTER THE VOID</button>
         </div>
-        
-        <div class="audio-controls">
-            <button id="playButton"><i class="fas fa-play"></i></button>
-            <button id="pauseButton"><i class="fas fa-pause"></i></button>
-        </div>
-        
-        <div class="visualizer" id="visualizer">
-            <!-- 오디오 시각화 바들이 여기에 동적으로 생성됩니다 -->
-        </div>
+        <div class="visualizer" id="visualizer"></div>
+    </div>
+    <div class="flash-highlights-container" id="flashHighlightsContainer"></div> 
+    <div class="global-glitch-overlay"></div> 
+    <div class="audio-controls">
+        <!-- Replaced Font Awesome <i> tags with inline SVGs -->
+        <button id="playButton">
+            <svg viewBox="0 0 384 512"> <!-- Font Awesome Play SVG -->
+                <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
+            </svg>
+        </button>
+        <button id="pauseButton">
+            <svg viewBox="0 0 320 512"> <!-- Font Awesome Pause SVG -->
+                <path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/>
+            </svg>
+        </button>
     </div>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <!-- Removed Font Awesome script tag -->
+    <!-- <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 파티클 생성
-            createParticles();
+            createOriginalCubicParticles(); 
+            initSwirlingParticles();
+            startFlashHighlights(); 
             
-            // 시작하기 버튼 클릭 이벤트
-            document.getElementById('enterButton').addEventListener('click', function() {
-                // 메인 게임 페이지로 이동
-                window.location.href = 'game.html'; // 실제 게임 페이지 URL로 변경하세요
-            });
+            const enterButton = document.getElementById('enterButton');
+            if (enterButton) {
+                enterButton.addEventListener('click', function() {
+                    document.body.style.transition = 'opacity 0.7s ease-out, filter 0.7s ease-out';
+                    document.body.style.opacity = '0';
+                    document.body.style.filter = 'blur(12px) brightness(0.25) saturate(0.5)'; 
+                    setTimeout(() => {
+                        // 콘솔 로그 대신 실제로 game.html로 이동
+                        window.location.href = 'game.html';
+                    }, 700);
+                });
+            }
             
-            // 오디오 컨트롤
-            const audio = new Audio('sounds/background-music.mp3'); // 실제 음악 파일 경로로 변경하세요
-            audio.loop = true;
-            
-            document.getElementById('playButton').addEventListener('click', function() {
-                audio.play();
-                setupAudioVisualizer(audio);
-            });
-            
-            document.getElementById('pauseButton').addEventListener('click', function() {
-                audio.pause();
-            });
+            let audio; // Audio object
+            try {
+                 // IMPORTANT: Replace with a valid audio file path for music and visualizer.
+                 // Example: audio = new Audio('path/to/your/music.mp3');
+                 console.warn("오디오 파일 경로가 설정되지 않았습니다. 음악 및 시각화 기능이 비활성화됩니다.");
+            } catch (e) {
+                console.error("오디오 초기화 오류:", e);
+            }
+
+            const playButton = document.getElementById('playButton');
+            const pauseButton = document.getElementById('pauseButton');
+
+            if (audio && playButton && pauseButton) {
+                audio.loop = true;
+                let visualizerInitialized = false;
+
+                playButton.addEventListener('click', function() {
+                    if (audio.paused) {
+                        audio.play().then(() => {
+                            if (!visualizerInitialized && (window.AudioContext || window.webkitAudioContext)) {
+                                setupAudioVisualizer(audio);
+                                visualizerInitialized = true;
+                            }
+                        }).catch(error => console.error("오디오 재생 오류:", error));
+                    }
+                });
+                
+                pauseButton.addEventListener('click', function() {
+                    audio.pause();
+                });
+            } else {
+                if(playButton) playButton.style.display = 'none';
+                if(pauseButton) pauseButton.style.display = 'none';
+                // Keep the console log for audio, but icon issue should be resolved.
+            }
         });
         
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 20;
+        function createOriginalCubicParticles() { 
+            const particlesContainer = document.getElementById('particles'); 
+            if (!particlesContainer) return;
+            const particleCount = 15; 
             
             for (let i = 0; i < particleCount; i++) {
                 const cubic = document.createElement('div');
-                cubic.classList.add('cubic');
-                
-                // 랜덤 위치 및 크기
-                const size = Math.random() * 30 + 10;
+                cubic.classList.add('cubic'); 
+                const size = Math.random() * 18 + 5; 
                 cubic.style.width = `${size}px`;
                 cubic.style.height = `${size}px`;
-                
-                const x = Math.random() * 100;
-                const y = Math.random() * 100;
-                cubic.style.left = `${x}%`;
-                cubic.style.top = `${y}%`;
-                
-                // 랜덤 회전 및 색상
-                const hue = Math.random() * 60 + 280; // 보라색~파란색 계열
-                cubic.style.backgroundColor = `hsla(${hue}, 100%, 50%, 0.5)`;
-                cubic.style.animationDuration = `${Math.random() * 15 + 5}s`;
-                cubic.style.animationDelay = `${Math.random() * 2}s`;
-                
+                cubic.style.left = `${Math.random() * 100}%`;
+                cubic.style.top = `${60 + Math.random() * 40}%`; 
+                const hue = Math.random() * 360; 
+                cubic.style.backgroundColor = `hsla(${hue}, 80%, 50%, 0.15)`;
+                cubic.style.color = `hsla(${hue}, 80%, 55%, 0.7)`; 
+                cubic.style.animationDuration = `${Math.random() * 10 + 7}s`; 
+                cubic.style.animationDelay = `${Math.random() * 6}s`; 
                 particlesContainer.appendChild(cubic);
+            }
+        }
+
+        // --- Swirling Particle System ---
+        const swirlParticleContainer = document.getElementById('swirlingParticles');
+        const swirlParticles = [];
+        const NUM_SWIRL_PARTICLES = 2500; 
+        let CENTER_X = window.innerWidth / 2;
+        let CENTER_Y = window.innerHeight / 2;
+        let swirlAnimationId = null; 
+
+        window.addEventListener('resize', () => {
+            CENTER_X = window.innerWidth / 2;
+            CENTER_Y = window.innerHeight / 2;
+            if (swirlParticles.length > 0) { 
+                initSwirlingParticles();
+            }
+        });
+
+        function initSwirlingParticles() {
+            if (!swirlParticleContainer) return;
+            
+            if (swirlAnimationId) {
+                cancelAnimationFrame(swirlAnimationId);
+            }
+            swirlParticleContainer.innerHTML = ''; 
+            swirlParticles.length = 0; 
+
+            for (let i = 0; i < NUM_SWIRL_PARTICLES; i++) {
+                const particleEl = document.createElement('div');
+                particleEl.classList.add('swirl-particle');
+                swirlParticleContainer.appendChild(particleEl);
+                const particle = createSwirlParticle(particleEl);
+                resetSwirlParticle(particle, true); 
+                swirlParticles.push(particle);
+            }
+            animateSwirlingParticles();
+        }
+
+        function createSwirlParticle(element) {
+            return {
+                element: element,
+                initialMaxRadius: 0, currentRadius: 0, targetRadius: 0,
+                startAngle: 0, currentAngle: 0,
+                spiralFactor: 0, rotationDirection: 0,
+                basePullSpeed: 0, currentPullSpeed:0, 
+                baseSize: 0,
+                color: '', baseOpacity: 0,
+                accelerationFactor: 3.0 + Math.random() * 2.0, 
+            };
+        }
+        
+        function resetSwirlParticle(p, isInitialSetup = false) {
+            p.initialMaxRadius = Math.max(CENTER_X, CENTER_Y) * 1.15; 
+            if (isInitialSetup) {
+                p.currentRadius = p.initialMaxRadius * (Math.random() * 0.8 + 0.2); 
+            } else {
+                p.currentRadius = p.initialMaxRadius * (Math.random() * 0.1 + 0.9); 
+            }
+            
+            p.startAngle = Math.random() * Math.PI * 2;
+            p.spiralFactor = Math.random() * 0.05 + 0.025; 
+            p.rotationDirection = Math.random() < 0.5 ? 1 : -1;
+            p.basePullSpeed = Math.random() * 0.25 + 0.2; 
+            p.baseSize = Math.random() * 2.0 + 0.8; 
+            p.color = `hsl(${Math.random() * 90 + 230}, 100%, ${Math.random() * 35 + 50}%)`; 
+            p.baseOpacity = Math.random() * 0.35 + 0.55; 
+            
+            p.currentAngle = p.startAngle + p.rotationDirection * (p.initialMaxRadius - p.currentRadius) * p.spiralFactor;
+            p.element.style.opacity = p.baseOpacity.toString();
+        }
+
+
+        function animateSwirlingParticles() {
+            swirlParticles.forEach(p => {
+                const distanceToCenter = p.currentRadius;
+                const normalizedDistance = Math.max(0, Math.min(1, distanceToCenter / p.initialMaxRadius)); 
+
+                p.currentPullSpeed = p.basePullSpeed + p.basePullSpeed * Math.pow(1 - normalizedDistance, 2) * p.accelerationFactor;
+                p.currentRadius -= p.currentPullSpeed;
+                
+                const radialMovementAmount = p.currentPullSpeed; 
+                p.currentAngle += p.rotationDirection * p.spiralFactor * radialMovementAmount * 0.25; 
+
+                const x = CENTER_X + p.currentRadius * Math.cos(p.currentAngle);
+                const y = CENTER_Y + p.currentRadius * Math.sin(p.currentAngle);
+
+                const sizeFactor = Math.max(0.05, Math.pow(normalizedDistance, 0.7)); 
+                const currentSize = p.baseSize * sizeFactor;
+                
+                p.element.style.width = `${currentSize}px`;
+                p.element.style.height = `${currentSize}px`;
+                p.element.style.transform = `translate(${x - currentSize / 2}px, ${y - currentSize / 2}px)`;
+                p.element.style.backgroundColor = p.color;
+                
+                let currentOpacity = p.baseOpacity;
+                if (normalizedDistance < 0.3) { 
+                    currentOpacity = p.baseOpacity * (normalizedDistance / 0.3);
+                }
+                p.element.style.opacity = Math.max(0, currentOpacity).toString();
+
+                if (p.currentRadius <= 0.5) { 
+                    resetSwirlParticle(p); 
+                }
+            });
+
+            swirlAnimationId = requestAnimationFrame(animateSwirlingParticles);
+        }
+        // --- End of Swirling Particle System ---
+
+        function createFlashHighlight() {
+            const container = document.getElementById('flashHighlightsContainer');
+            if (!container) return;
+
+            const flash = document.createElement('div');
+            flash.classList.add('flash-highlight');
+            flash.style.left = `${Math.random() * 100}%`;
+            flash.style.top = `${Math.random() * 100}%`;
+            const initialRotation = Math.random() * 360;
+            const endRotation = initialRotation + (Math.random() * 80 - 40); 
+            flash.style.transform = `rotate(${initialRotation}deg) scale(0.4)`; 
+            flash.style.setProperty('--flash-rotate-end', `${endRotation}deg`);
+            container.appendChild(flash);
+            setTimeout(() => {
+                if (flash.parentNode === container) { 
+                    container.removeChild(flash);
+                }
+            }, 450); 
+        }
+
+        function startFlashHighlights() {
+            setInterval(createFlashHighlight, 130); 
+            for(let i=0; i<4; i++) { 
+                setTimeout(createFlashHighlight, Math.random() * 80);
             }
         }
         
         function setupAudioVisualizer(audioElement) {
-            const visualizer = document.getElementById('visualizer');
-            visualizer.innerHTML = ''; // 기존 바 제거
+            const visualizerContainer = document.getElementById('visualizer');
+            if (!visualizerContainer) return;
+            visualizerContainer.innerHTML = ''; 
             
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const analyser = audioContext.createAnalyser();
-            const source = audioContext.createMediaElementSource(audioElement);
-            
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
-            
-            analyser.fftSize = 128;
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            
-            // 시각화 바 생성
-            const barCount = 32; // 바 개수 조절
-            const bars = [];
-            
-            for (let i = 0; i < barCount; i++) {
-                const bar = document.createElement('div');
-                bar.style.width = `${100 / barCount - 1}%`;
-                bar.style.backgroundColor = `hsl(${280 + i * 3}, 100%, 50%)`;
-                bar.style.height = '5px';
-                bar.style.transition = 'height 0.05s';
-                visualizer.appendChild(bar);
-                bars.push(bar);
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) {
+                console.warn("AudioContext가 지원되지 않습니다. 시각화 기능이 비활성화됩니다.");
+                return;
             }
-            
-            // 오디오 시각화 업데이트
-            function updateVisualizer() {
-                requestAnimationFrame(updateVisualizer);
-                
-                analyser.getByteFrequencyData(dataArray);
+            const audioContext = new AudioContext();
+            if (audioContext.state === 'suspended') { audioContext.resume(); }
+
+            try {
+                const analyser = audioContext.createAnalyser();
+                const source = audioContext.createMediaElementSource(audioElement);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+                analyser.fftSize = 64; 
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+                const barCount = 22; 
+                const bars = [];
                 
                 for (let i = 0; i < barCount; i++) {
-                    const index = Math.floor(i * bufferLength / barCount);
-                    const value = dataArray[index];
-                    const height = value * 0.7; // 높이 조절
-                    bars[i].style.height = `${height}px`;
+                    const bar = document.createElement('div');
+                    bar.classList.add('bar'); 
+                    bar.style.width = `calc(${100 / barCount}% - 1.2px)`; 
+                    bar.style.backgroundColor = `hsl(${165 + i * (90/barCount)}, 100%, 50%)`; 
+                    visualizerContainer.appendChild(bar);
+                    bars.push(bar);
                 }
+                
+                function updateVisualizer() {
+                    if (!audioElement || audioElement.paused) { 
+                        requestAnimationFrame(updateVisualizer); 
+                        return;
+                    }
+                    requestAnimationFrame(updateVisualizer);
+                    analyser.getByteFrequencyData(dataArray);
+                    bars.forEach((bar, i) => {
+                        const index = Math.floor(i * (bufferLength / barCount)); 
+                        const value = dataArray[index] || 0;
+                        const maxHeight = visualizerContainer.clientHeight * 0.7; 
+                        let height = (value / 255) * maxHeight; 
+                        height = Math.max(1.2, height); 
+                        bar.style.height = `${height}px`;
+                    });
+                }
+                updateVisualizer();
+            } catch (e) {
+                console.error("오디오 시각화 설정 오류:", e);
+                if (visualizerContainer) visualizerContainer.innerHTML = '<p style="color: #ff00ff; font-size:10px;">시각화 오류</p>';
             }
-            
-            updateVisualizer();
         }
     </script>
 </body>

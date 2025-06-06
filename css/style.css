@@ -80,7 +80,10 @@ body {
     border-radius: 6px;
     z-index: 100; /* Ensure it's on top of the canvas */
 }
-
+#toolbar .tool-icon img {
+  transform: scale(2); /* 2배 크기로 확대 */
+  transform-origin: center; /* 중앙 기준으로 확대 */
+}
 .tool-icon {
     width: 48px;
     height: 48px;
@@ -94,4 +97,67 @@ body {
     user-select: none; /* Prevent text selection on click */
     border-radius: 4px;
     color: #fff; /* For emoji visibility */
+}
+
+
+/* 인벤토리 UI 스타일 */
+#inventory-ui {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  max-width: 800px;
+  height: 70%;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid #555;
+  border-radius: 8px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.inventory-header {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr); /* 마인크래프트처럼 9x3 그리드 */
+  grid-template-rows: repeat(3, 1fr);
+  gap: 8px;
+  flex-grow: 1;
+}
+
+.inventory-item {
+  background-color: #555;
+  border: 2px solid #777;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.inventory-item:hover {
+  border-color: #aaa;
+}
+
+.inventory-item.selected {
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+}
+
+.inventory-item img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+
+.hidden {
+  display: none;
 }
